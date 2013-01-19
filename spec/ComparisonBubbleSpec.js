@@ -7,8 +7,8 @@ describe("ComparisonBubble", function() {
 			circle: function() {}, 
 			canvas: { clientWidth: 250, clientHeight: 300 } 
 		};
-		values = [3.1, 4]; // e.g. [acheivement, goal]		
-		axisMaxValue = 5;
+		values = [8, 6.3, 5.1, 3]; // e.g. [acheivement, goal]		
+		axisMaxValue = 10;
 		
 		comparisonBubble = ComparisonBubble(paper, values, axisMaxValue);
   });
@@ -27,9 +27,9 @@ describe("ComparisonBubble", function() {
 		});
 		
 		describe("when values is defined", function() {
-			describe("when values has less than two elements", function() {
+			describe("when values are not in descending order", function() {
 				beforeEach(function() {
-					values = [3.1];
+					values = [3, 5, 4, 7];
 					comparisonBubble = ComparisonBubble(paper, values);
 				});
 				
@@ -38,32 +38,21 @@ describe("ComparisonBubble", function() {
 				});
 			});
 			
-			describe("when values has more than two elements", function() {
+			describe("when values are in ascending order", function() {
 				beforeEach(function() {
-					values = [3.1, 4, 5];
+					values = [7, 5, 4, 3];
 					comparisonBubble = ComparisonBubble(paper, values);
 				});
-				
-				it("should return true", function() {
-					expect(comparisonBubble).toBe(true);
-				});
-			});
-			
-			describe("when values has two elements", function() {
-			  beforeEach(function() {
-			  	values = [3.1, 4];
-			  	comparisonBubble = ComparisonBubble(paper, values);
-			  });
-			  
+
 				it("should call draw()", function() {
 					spyOn(comparisonBubble, "draw").andCallThrough();
 				})
-			
-			  it("should return a ComparisonBubble", function() {
-			  	expect(comparisonBubble.toString()).toEqual(
-			  		"[object ComparisonBubble]"
-			  	);
-			  });
+
+				it("should return a ComparisonBubble", function() {
+					expect(comparisonBubble.toString()).toEqual(
+						"[object ComparisonBubble]"
+					);
+				});
 			});
 		});
 	});
@@ -111,8 +100,6 @@ describe("ComparisonBubble", function() {
 			
 			axisMaxValueDiameter = smallestDimensionSize;
 			
-			firstValueDiameter = (values[0] / axisMaxValue) * smallestDimensionSize;
-			secondValueDiameter = (values[1] / axisMaxValue) * smallestDimensionSize;
 			
 			comparisonBubble = ComparisonBubble(paper, values, axisMaxValue);
 			paper.circle.calls.length = 0;
@@ -125,16 +112,14 @@ describe("ComparisonBubble", function() {
 			);
 		});
 		
-		it("should secondly draw a circle representing the first value with a diameter relative to the axis", function() {
-			expect(paper.circle.calls[1].args).toEqual(
-				[centerX, centerY, (firstValueDiameter / 2)]
-			);
-		});
-		
-		it("should thirdly draw a circle representing the second value with a diameter relative to the axis", function() {
-			expect(paper.circle.calls[2].args).toEqual(
-				[centerX, centerY, (secondValueDiameter / 2)]
-			);
+		it("should then draw circles representing each value with a diameter relative to the axis", function() {
+			for (var valueIndex = 0; valueIndex < values.length; valueIndex ++) {
+				var valueCircleDiameter = (values[valueIndex] / axisMaxValue) * smallestDimensionSize;
+				var callIndex = valueIndex + 1;
+				expect(paper.circle.calls[callIndex].args).toEqual(
+					[centerX, centerY, (valueCircleDiameter / 2)]
+				);
+			}
 		});
 	});
 	
@@ -147,10 +132,10 @@ describe("ComparisonBubble", function() {
 			
 			expect(elements.length).toEqual(expectedNumberOfElements);
 			
-			for(var elementIndex; elementIndex < elements.length; elementIndex ++) {
-				expect(elements[elementIndex].toString()).toEqual("Raphaël’s object");
-				expect(elements[elementIndex].type()).toEqual("circle");
-			}
+			//for(var elementIndex; elementIndex < elements.length; elementIndex ++) {
+			//	expect(elements[elementIndex].toString()).toEqual("Raphaël’s object");
+			//	expect(elements[elementIndex].type()).toEqual("circle");
+			//}
 		});
 	});
 

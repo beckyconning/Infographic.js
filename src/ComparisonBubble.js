@@ -5,13 +5,15 @@ var ComparisonBubble = function(paper, values, axisMaxValue) {
 	var self = Infographic(paper);
 	
 	// validation
-	if(typeof values === "undefined") { 
+	var valuesNotDefined = (typeof values === "undefined");
+	if(valuesNotDefined) { 
 		return true; 
 	}
-	else {
-		if(values.length < 2 || values.length > 2) { 
-			return true; 
-		}
+	
+	var descOrderSortedValues = values.toString().split(",").sort().reverse();
+	var valuesNotInDecendingOrder = (values.toString() != descOrderSortedValues.toString());
+  if(valuesNotInDecendingOrder) {
+		return true;
 	}
 	
 	// private
@@ -27,9 +29,9 @@ var ComparisonBubble = function(paper, values, axisMaxValue) {
 		);
 			
 		values.forEach(function(value) {
-			var diameter = (value / axisMaxValue) * minDimensionSize;
+			var radius = ((value / axisMaxValue) * minDimensionSize) / 2;
 			self.elements.push(
-				paper.circle(centerX, centerY, (diameter / 2))
+				paper.circle(centerX, centerY, radius)
 			);
 		});
 	};

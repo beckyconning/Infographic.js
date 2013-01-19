@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Infographic examples</title>
+	<script src="../lib/raphael-2.1.0.js" type="text/javascript"></script>
+	<script src="../src/Infographic.js" type="text/javascript"></script>
+	<script src="../src/ComparisonBubble.js" type="text/javascript"></script>
+	<script src="../src/BarChart.js" type="text/javascript"></script>
+	<style type="text/css">
+		div#comparisonBubbleExample div circle:nth-of-type(1) {
+			stroke-width: 0;
+			fill: #fafafa;
+		}
+		div#comparisonBubbleExample div circle:nth-of-type(2) {
+			stroke-width: 0;
+			fill: #2CF2DE;
+		}
+		div#comparisonBubbleExample div circle:nth-of-type(3) {
+			stroke-width: 0;
+			fill: #EBF227;
+		}
+		div#comparisonBubbleExample div circle:nth-of-type(4) {
+			stroke-width: 0;
+			fill: #FF40BC;
+		}
+		div#comparisonBubbleExample div circle:nth-of-type(5) {
+			stroke-width: 0;
+			fill: #000000;
+		}
+		
+		div#barChartExample div{
+			background-color: #fafafa;
+		}
+		div#barChartExample div rect:nth-of-type(1) {
+			stroke-width: 0;
+			fill: #2CF2DE;
+		}
+		div#barChartExample div rect:nth-of-type(2) {
+			stroke-width: 0;
+			fill: #EBF227;
+		}
+		div#barChartExample div rect:nth-of-type(3) {
+			stroke-width: 0;
+			fill: #FF40BC;
+		}
+		div#barChartExample div rect:nth-of-type(4) {
+			stroke-width: 0;
+			fill: #000000;
+		}
+	</style>
+	<script>
+		window.onload = function() {  
+			var comparisonBubbleExampleElement = document.querySelector("div#comparisonBubbleExample div");
+			var paper = Raphael(comparisonBubbleExampleElement, "100%", "100%");
+			var comparisonBubble = ComparisonBubble(paper, [9.12224, 4.351, 2.458, 1], 10);
+			
+			var barChartExampleElement = document.querySelector("div#barChartExample div");
+			var paper = Raphael(barChartExampleElement, "100%", "100%");
+			var barChart = BarChart(paper, [9.12224, 4.351, 2.458, 1], 10, 0.02);	
+		};
+	</script>
+</head>
+<body>
+	<div id="comparisonBubbleExample">
+		<h2>Comparison Bubble example</h2>
+		<div style="width: 300px; height: 300px;"></div>
+	</div>
+	<div id="barChartExample">
+		<h2>Bar Chart example</h2>
+		<div style="width: 300px; height: 300px;"></div>
+	</div>
+</body>
+</html>
