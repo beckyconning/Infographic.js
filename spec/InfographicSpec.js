@@ -3,7 +3,8 @@ describe("Infographic", function() {
 
   beforeEach(function() {
 		paper = { canvas: { clientWidth: 250, clientHeight: 300 } };
-		infographic = Infographic(paper);
+		values = [5.35, 3.42, 2.590, 1.4];
+		infographic = Infographic(paper, values);
   });
 
 	describe("constructor", function() {
@@ -11,7 +12,7 @@ describe("Infographic", function() {
 		describe("when paper is undefined", function() {
 			beforeEach(function() {
 				paper = undefined;
-				infographic = Infographic(paper);
+				infographic = Infographic(paper, values);
 			})
 			
 			it("should return true", function() {
@@ -22,7 +23,7 @@ describe("Infographic", function() {
 		describe("when paper is defined", function() {
 			beforeEach(function() {
 				paper = { canvas: { clientWidth: 250, clientHeight: 300 } };
-				infographic = Infographic(paper);
+				infographic = Infographic(paper, values);
 			});
 			
 			it("should return an Infographic", function() {
@@ -30,6 +31,30 @@ describe("Infographic", function() {
 					"[object Infographic]"
 				);
 			});
+		});
+		
+		describe("when values is undefined", function() {
+			beforeEach(function() {
+				values = undefined;
+				infographic = Infographic(paper, values);
+			});
+			
+			it("should return true", function() {
+				expect(infographic).toBe(true);
+			});
+		});
+		
+		describe("when values is defined", function() {
+		  beforeEach(function() {
+		  	values = [3.1, 4];
+		  	infographic = Infographic(paper, values);
+		  });
+		
+		  it("should return a Infographic", function() {
+		  	expect(infographic.toString()).toEqual(
+		  		"[object Infographic]"
+		  	);
+		  });
 		});
 	});
 	

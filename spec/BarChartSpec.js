@@ -1,30 +1,35 @@
 describe("BarChart", function() {
   var barChart;
-	var paper, values, axisMaxValue, barSpacingAsWidthMultiplier;
+	var paper, values, options;
+	var paperWidth, paperHeight, barWidth, barSpacingAsWidthMultiplier, barSpacingWidth;
 
   beforeEach(function() {		
 		paper = { 
-			rect: function() {}, 
+			rect: function() { return { tagName: "rect" }; },
+			text: function() { return { tagName: "text" }; },
 			canvas: { clientWidth: 250, clientHeight: 300 } 
 		};
 		values = [3.1, 4, 2];	
-		axisMaxValue = 5;
+		options = {
+			barSpacingAsWidthMultiplier: 1,
+			valueLabels: true
+		};
 		
-		barChart = BarChart(paper, values, axisMaxValue);
+		barChart = BarChart(paper, values, options);
+		
+		barSpacingAsWidthMultiplier = options.barSpacingAsWidthMultiplier;
+		
+		paperWidth = paper.canvas.clientWidth;
+		paperHeight = paper.canvas.clientHeight;
+		
+		barSpacingAsWidthMultiplier = options.barSpacingAsWidthMultiplier;
+		barSpacingWidth = (barSpacingAsWidthMultiplier * paperWidth);
+		barWidthWithoutSpacing = paperWidth / values.length;
+		barWidthWithTrailingSpacing = barWidthWithoutSpacing - barSpacingWidth;
+		barWidth = barWidthWithTrailingSpacing + (barSpacingWidth / values.length);
   });
 
 	describe("constructor", function() {
-		
-		describe("when values is undefined", function() {
-			beforeEach(function() {
-				values = undefined;
-				barChart = BarChart(paper, values);
-			});
-			
-			it("should return true", function() {
-				expect(barChart).toBe(true);
-			});
-		});
 		
 		describe("when values is defined", function() {
 		  beforeEach(function() {
@@ -43,33 +48,10 @@ describe("BarChart", function() {
 		  });
 		});
 		
-		describe("when axisMaxValue is undefined in constructor call", function() {
-	  	beforeEach(function() {
-	  		axisMaxValue = undefined;
-	  		barChart = BarChart(paper, values, axisMaxValue);
-	  	});
-	  	
-	  	it("should equal the highest value from values", function() {
-	  		var highestValue = Math.max.apply(Math, values);
-	  		expect(barChart.axisMaxValue).toEqual(highestValue);
-			});
-		});
-		
-		describe("when axisMaxValue is defined in constructor call", function() {
-	  	beforeEach(function() {
-	  		axisMaxValue = 5;
-	  		barChart = BarChart(paper, values, axisMaxValue);
-	  	});
-	  	
-	  	it("should equal the provided axisMaxValue", function() {
-	  		expect(barChart.axisMaxValue).toEqual(axisMaxValue);
-			});
-		});
-		
-		describe("when barSpacingAsWidthMultiplier is undefined in constructor call", function() {
+		describe("when barSpacingAsWidthMultiplier is undefined", function() {
 			beforeEach(function() {
-				axisMaxValue = undefined;
-				barChart = BarChart(paper, values, axisMaxValue, barSpacingAsWidthMultiplier);
+				options.barSpacingAsWidthMultiplier = undefined;
+				barChart = BarChart(paper, values, options);
 			});
     
 			it("should equal 0.1", function() {
@@ -78,40 +60,87 @@ describe("BarChart", function() {
 			});
 		});
     
-		describe("when barSpacingAsWidthMultiplier is defined in constructor call", function() {
+		describe("when barSpacingAsWidthMultiplier is defined", function() {
 			beforeEach(function() {
-				barSpacingAsWidthMultiplier = 0.25;
-				barChart = BarChart(paper, values, axisMaxValue, barSpacingAsWidthMultiplier);
+				options.barSpacingAsWidthMultiplier = 0.25;
+				barChart = BarChart(paper, values, options);
 			});
     
-			it("should equal the provided axisMaxValue", function() {
-				expect(barChart.barSpacingAsWidthMultiplier).toEqual(barSpacingAsWidthMultiplier);
+			it("should equal the provided barSpacingAsWidthMultiplier", function() {
+				expect(barChart.barSpacingAsWidthMultiplier).toEqual(options.barSpacingAsWidthMultiplier);
 			});
+		});
+    
+		describe("when barSpacingAsWidthMultiplier is defined", function() {
+			beforeEach(function() {
+				options.barSpacingAsWidthMultiplier = 0.25;
+				barChart = BarChart(paper, values, options);
+			});
+    
+			it("should equal the provided barSpacingAsWidthMultiplier", function() {
+				expect(barChart.barSpacingAsWidthMultiplier).toEqual(options.barSpacingAsWidthMultiplier);
+			});
+		});
+		
+		describe("when valueLabels is not defined", function() {
+			beforeEach(function() {
+				options.valueLabels = undefined;
+				spyOn(paper, "text")
+				barChart = BarChart(paper, values, options);
+			});
+			
+			it("should not draw any text", function() {
+				expect(paper.text).not.toHaveBeenCalled();
+			});
+		});
+		
+		describe("when valueLabels is defined", function() {
+			beforeEach(function() {
+				spyOn(paper, "text")
+			});
+			
+			describe("when valueLabels is false", function() {
+				beforeEach(function() {
+					options.valueLabels = false;
+					barChart = BarChart(paper, values, options);
+				});
+
+				it("should not draw any text", function() {
+					expect(paper.text).not.toHaveBeenCalled();
+				});
+			});
+			
+			describe("when valueLabels is true", function() {
+				beforeEach(function() {
+					options.valueLabels = true;
+					barChart = BarChart(paper, values, options);
+				});
+
+				it("should draw text", function() {
+					expect(paper.text).toHaveBeenCalled();
+				});
+			});
+
 		});
 	});
 	
-	describe("draw()", function() {
-		var paperWidth, paperHeight, barWidth, barSpacingAsWidthMultiplier, barSpacingWidth;
-		beforeEach(function() {
+	describe("drawBars()", function() {
+		beforeEach(function() {			
+			values = [3.1, 4, 2];
+			barChart = BarChart(paper, values, options);
+			
 			spyOn(paper, "rect");
 			
-			paperWidth = paper.canvas.clientWidth;
-			paperHeight = paper.canvas.clientHeight;
-			
-			barSpacingAsWidthMultiplier = 0.1;
-			barSpacingWidth = (barSpacingAsWidthMultiplier * paperWidth);
-			barWidthWithoutSpacing = paperWidth / values.length;
-			barWidthWithTrailingSpacing = barWidthWithoutSpacing - barSpacingWidth;
-			barWidth = barWidthWithTrailingSpacing + (barSpacingWidth / values.length);
-			
-			barChart = BarChart(paper, values, axisMaxValue, barSpacingAsWidthMultiplier);
-			paper.rect.calls.length = 0;
-			barChart.draw(paper, values, axisMaxValue, barSpacingAsWidthMultiplier);
+			barChart.drawBars();
+		});
+		
+		it("should call rect once for each value", function() {
+			expect(paper.rect.calls.length).toEqual(values.length);
 		});
 		
 		it("should draw rects for each value with heights relative to the axis", function() {
 			for(var valueIndex = 0; valueIndex < values.length; valueIndex ++) {
-				var valueBarHeight = (values[valueIndex] / axisMaxValue) * paperHeight;
+				var valueBarHeight = (values[valueIndex] / barChart.yAxisMaxValue) * paperHeight;
 				var valueBarXPosition = ((barWidth + barSpacingWidth) * valueIndex);
 				var valueBarYPosition = paperHeight - valueBarHeight;
 				
@@ -121,18 +150,54 @@ describe("BarChart", function() {
 			};
 		});
 		
+		// elements has undefined in during spec but not elsewhere?
+		it("should put a rect into elements for each value", function() {
+			var rects = barChart.elements.filter(function(element) {
+				if (element) { return (element.tagName == "rect"); }
+				else	       { return false; }
+			});
+			
+			expect(rects.length).toEqual(values.length);
+		});
+		
 	});
 	
-	describe("elements", function() {
-		it("should contain Raphael rect elements for each value", function() {		
-			var elements = barChart.elements;
-						
-			expect(elements.length).toEqual(values.length);
+	describe("drawValueLabels()", function() {
+		beforeEach(function() {
+			values = [3.1, 4, 2];
+			barChart = BarChart(paper, values, options);
 			
-			//for(var elementIndex; elementIndex < elements.length; elementIndex ++) {
-			//	expect(elements[elementIndex].toString()).toEqual("Raphaël’s object");
-			//	expect(elements[elementIndex].type()).toEqual("bleep");
-			//}
+			spyOn(paper, "text");
+			barChart.drawValueLabels();
+		});
+		
+		it("should call text once for each value", function() {
+			expect(paper.text.calls.length).toEqual(values.length);
+		});
+		
+		it("should draw a text field with the value in the center of the bar for each value", function() {
+			for(var valueIndex = 0; valueIndex < values.length; valueIndex ++) {
+				var valueBarHeight = (values[valueIndex] / barChart.yAxisMaxValue) * paperHeight;
+				var valueBarXPosition = ((barWidth + barSpacingWidth) * valueIndex);
+				var valueBarYPosition = paperHeight - valueBarHeight;
+				
+				var valueLabelXPosition = valueBarXPosition + (barWidth / 2);
+				var valueLabelYPosition = valueBarYPosition + (valueBarHeight / 2);
+				
+				expect(paper.text.calls[valueIndex].args).toEqual(
+					[valueLabelXPosition, valueLabelYPosition, values[valueIndex]]
+				);
+			};
+		});
+		
+		// elements has undefined in during spec but not elsewhere?
+		it("should put a text field into elements for each value", function() {
+			var texts = barChart.elements.filter(function(element) {
+				if (element) { return (element.tagName == "text"); }
+				else	       { return false; }
+			});
+			
+			expect(texts.length).toEqual(values.length);
 		});
 	});
 
