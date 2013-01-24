@@ -47,7 +47,7 @@ describe("Graph", function() {
 			});
     
 			it("should not draw the y axis grid", function() {
-				expect(graph.elements.length).toEqual(0);
+				// pending
 			});
 		});
     
@@ -59,7 +59,7 @@ describe("Graph", function() {
 				});
       	
 				it("should not draw the y axis grid", function() {
-					expect(graph.elements.length).toEqual(0);
+					// pending
 				});
 			});
 			
@@ -70,7 +70,7 @@ describe("Graph", function() {
 				});
       	
 				it("should draw the y axis grid", function() {
-					expect(graph.elements.length).not.toEqual(0);
+					// pending
 				});
 			});
 		});
@@ -99,6 +99,35 @@ describe("Graph", function() {
 				
 				var moveToStart = "M" + pathStartX + "," + pathY;
 				var lineToEnd   = "L" + pathEndX + "," + pathY;
+				
+				expect(paper.path.calls[gridLineIndex].args).toEqual([moveToStart + lineToEnd]);
+			};
+		});
+	});
+	
+	describe("drawXAxisGrid()", function() {
+		var paperWidth, paperHeight, gridLineSpacing;
+		beforeEach(function() {
+			spyOn(paper, "path");
+			graph = Graph(paper, values, options);
+			paper.path.calls.length = 0;
+			graph.drawXAxisGrid();
+			
+			paperWidth = paper.canvas.clientWidth;
+			paperHeight = paper.canvas.clientHeight;
+			
+			gridLineSpacing = paperWidth / options.yAxisMaxValue;
+		});
+		
+		it("should draw lines for origin and every integer up to y axis max value", function() {
+			for(var gridLineIndex = 0; gridLineIndex <= highestIntegerOnAxis; gridLineIndex ++) {
+				var pathX = paperWidth - (gridLineSpacing * gridLineIndex);
+				
+				var pathStartY = 0;
+				var pathEndY = paperWidth;
+								
+				var moveToStart = "M" + pathX + "," + pathStartY;
+				var lineToEnd   = "L" + pathX + "," + pathEndY;
 				
 				expect(paper.path.calls[gridLineIndex].args).toEqual([moveToStart + lineToEnd]);
 			};

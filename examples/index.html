@@ -64,14 +64,14 @@
 			var comparisonBubbleExampleElement = document.querySelector("div#comparisonBubbleExample div");
 			var paper = Raphael(comparisonBubbleExampleElement, "100%", "100%");
 			var comparisonBubble = ComparisonBubble(paper, [9.12224, 4.351, 2.458, 1], {
-				yAxisMaxValue: 12
+				yAxisMaxValue: 10
 			});
 			
 			var columnBarChartExampleElement = document.querySelector("div#columnBarChartExample div");
 			var paper = Raphael(columnBarChartExampleElement, "100%", "100%");
 			barChart = BarChart(paper, [9.12224, 4.351, 2.458, 1], { 
 				barSpacingAsWidthMultiplier: 0.05,
-				yAxisMaxValue: 12,
+				yAxisMaxValue: 10,
 				yAxisGrid: true,
 				valueLabels: true
 			});	
@@ -80,8 +80,8 @@
 			var paper = Raphael(rowBarChartExampleElement, "100%", "100%");
 			barChart = BarChart(paper, [9.12224, 4.351, 2.458, 1], { 
 				barSpacingAsWidthMultiplier: 0.05,
-				yAxisMaxValue: 12,
-				yAxisGrid: true,
+				yAxisMaxValue: 10,
+				xAxisGrid: true,
 				valueLabels: true,
 				orientation: "row"
 			});	
