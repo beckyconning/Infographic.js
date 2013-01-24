@@ -1,7 +1,8 @@
 describe("BarChart", function() {
   var barChart;
 	var paper, values, options;
-	var paperWidth, paperHeight, barWidth, barSpacingAsWidthMultiplier, barSpacingWidth;
+	var paperWidth, barWidth, barSpacingAsWidthMultiplier, barSpacingWidth;
+	var paperHeight, barHeight, barSpacingAsHeightMultiplier, barSpacingHeight;
 
   beforeEach(function() {		
 		paper = { 
@@ -28,6 +29,12 @@ describe("BarChart", function() {
 		barWidthWithoutSpacing = paperWidth / values.length;
 		barWidthWithTrailingSpacing = barWidthWithoutSpacing - barSpacingWidth;
 		barWidth = barWidthWithTrailingSpacing + (barSpacingWidth / values.length);
+
+		barSpacingAsHeightMultiplier = options.barSpacingAsWidthMultiplier;
+		barSpacingHeight = (barSpacingAsHeightMultiplier * paperHeight);
+		barHeightWithoutSpacing = paperHeight / values.length;
+		barHeightWithTrailingSpacing = barHeightWithoutSpacing - barSpacingHeight;
+		barHeight = barHeightWithTrailingSpacing + (barSpacingHeight / values.length);
   });
 
 	describe("constructor", function() {
@@ -194,14 +201,11 @@ describe("BarChart", function() {
 		});
 		
 		describe("when row orientation", function() {
-			var barHeight;
 			beforeEach(function() {
 				options.orientation = "row";
 				barChart = BarChart(paper, values, options);
 				paper.rect.calls.length = 0;
 				barChart.drawBars();
-				barHeight = barWidth;
-				barSpacingHeight = barSpacingWidth;
 			});
 			
 			it("should draw rects for each value with widths relative to the axis", function() {
@@ -282,22 +286,7 @@ describe("BarChart", function() {
 			});
 			
 			it("should draw a text field with the value in the center of the bar for each value", function() {
-				for(var valueIndex = 0; valueIndex < values.length; valueIndex ++) {
-					var valueBarWidth = (values[valueIndex] / self.yAxisMaxValue) * paperWidth;
-					var valueBarXPosition = 0;
-					var valueBarYPosition = ((barHeight + barSpacingHeight) * valueIndex);
-          var 
-					var labelXPosition = valueBarXPosition + (valueBarWidth / 2);
-					var labelYPosition = valueBarYPosition + (barHeight / 2);
-
-					var valueBeforePoint = values[valueIndex].toString().split(".")[0];
-					var labelPrecision = barChart.valueLabelsDecimalAccuracy + valueBeforePoint.length;
-					var labelText = values[valueIndex].toPrecision(labelPrecision);
-
-					expect(paper.text.calls[valueIndex].args).toEqual(
-						[labelXPosition, labelYPosition, labelText]
-					);
-				};
+				// pending
 			});
 		});
 		
